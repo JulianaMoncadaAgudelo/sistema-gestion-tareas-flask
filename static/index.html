@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Tareas - API</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📋 Gestión de Tareas</h1>
+            <p>Sistema de gestión de tareas con API REST</p>
+        </header>
+
+        <div class="actions">
+            <button class="btn btn-primary" onclick="showCreateForm()">➕ Nueva Tarea</button>
+            <button class="btn btn-secondary" onclick="loadTasks()">🔄 Actualizar</button>
+        </div>
+
+        <!-- Formulario para crear/editar tarea -->
+        <div id="taskForm" class="form-container" style="display: none;">
+            <h2 id="formTitle">Nueva Tarea</h2>
+            <form id="taskFormElement" onsubmit="saveTask(event)">
+                <input type="hidden" id="taskId">
+                
+                <div class="form-group">
+                    <label for="title">Título *</label>
+                    <input type="text" id="title" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Descripción</label>
+                    <textarea id="description" rows="3"></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="priority">Prioridad</label>
+                        <select id="priority">
+                            <option value="baja">Baja</option>
+                            <option value="media" selected>Media</option>
+                            <option value="alta">Alta</option>
+                            <option value="bloqueante">Bloqueante</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="effort_hours">Horas Estimadas</label>
+                        <input type="number" id="effort_hours" step="0.1" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="status">Estado</label>
+                        <select id="status">
+                            <option value="pendiente" selected>Pendiente</option>
+                            <option value="en_progreso">En Progreso</option>
+                            <option value="en_revision">En Revisión</option>
+                            <option value="completada">Completada</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="assigned_to">Asignado a</label>
+                        <input type="text" id="assigned_to" placeholder="Nombre del miembro">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">💾 Guardar</button>
+                    <button type="button" class="btn btn-secondary" onclick="hideForm()">❌ Cancelar</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Mensajes -->
+        <div id="message" class="message" style="display: none;"></div>
+
+        <!-- Lista de tareas -->
+        <div id="tasksContainer">
+            <div class="loading">Cargando tareas...</div>
+        </div>
+    </div>
+
+    <script src="/app.js"></script>
+</body>
+</html>
+

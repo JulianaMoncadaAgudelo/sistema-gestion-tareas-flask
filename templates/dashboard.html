@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Sistema de Tareas{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="dashboard-header">
+        <h1><i class="fas fa-tachometer-alt"></i> Dashboard</h1>
+        <p>Bienvenido, {{ current_user.nombre }}</p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card stat-total">
+            <div class="stat-icon">
+                <i class="fas fa-tasks"></i>
+            </div>
+            <div class="stat-info">
+                <h3>{{ estadisticas.total }}</h3>
+                <p>Total de Tareas</p>
+            </div>
+        </div>
+
+        <div class="stat-card stat-pending">
+            <div class="stat-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-info">
+                <h3>{{ estadisticas.pendientes }}</h3>
+                <p>Pendientes</p>
+            </div>
+        </div>
+
+        <div class="stat-card stat-progress">
+            <div class="stat-icon">
+                <i class="fas fa-spinner"></i>
+            </div>
+            <div class="stat-info">
+                <h3>{{ estadisticas.en_progreso }}</h3>
+                <p>En Progreso</p>
+            </div>
+        </div>
+
+        <div class="stat-card stat-review">
+            <div class="stat-icon">
+                <i class="fas fa-eye"></i>
+            </div>
+            <div class="stat-info">
+                <h3>{{ estadisticas.en_revision }}</h3>
+                <p>En Revisión</p>
+            </div>
+        </div>
+
+        <div class="stat-card stat-completed">
+            <div class="stat-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-info">
+                <h3>{{ estadisticas.completadas }}</h3>
+                <p>Completadas</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="tareas-section">
+        <div class="section-header">
+            <h2><i class="fas fa-list"></i> Mis Tareas</h2>
+            <a href="{{ url_for('nueva_tarea') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Nueva Tarea
+            </a>
+        </div>
+
+        {% if tareas %}
+        <div class="tareas-grid">
+            {% for tarea in tareas %}
+            <div class="tarea-card tarea-{{ tarea.status }}">
+                <div class="tarea-header">
+                    <h3>{{ tarea.title }}</h3>
+                    <div class="tarea-actions">
+                        <select class="estado-select" data-tarea-id="{{ tarea.id }}" onchange="cambiarEstado(this)">
+                            <option value="pendiente" {% if tarea.status == 'pendiente' %}selected{% endif %}>Pendiente</option>
+                            <option value="en_progreso" {% if tarea.status == 'en_progreso' %}selected{% endif %}>En Progreso</option>
+                            <option value="en_revision" {% if tarea.status == 'en_revision' %}selected{% endif %}>En Revisión</option>
+                            <option value="completada" {% if tarea.status == 'completada' %}selected{% endif %}>Completada</option>
+                        </select>
+                        <a href="{{ url_for('editar_tarea', tarea_id=tarea.id) }}" class="btn-icon" title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        {% if current_user.es_admin or tarea.creador_id == current_user.id %}
+                        <form method="POST" action="{{ url_for('eliminar_tarea', tarea_id=tarea.id) }}" style="display: inline;" onsubmit="return confirm('¿Estás seguro de eliminar esta tarea?');">
+                            <button type="submit" class="btn-icon btn-danger" title="Eliminar">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="tarea-body">
+                    {% if tarea.description %}
+                    <p class="tarea-descripcion">{{ tarea.description }}</p>
+                    {% endif %}
+
+                    <div class="tarea-meta">
+                        <span class="badge badge-prioridad-{{ tarea.priority }}">
+                            <i class="fas fa-flag"></i> {{ tarea.priority|title }}
+                        </span>
+                        <span class="badge badge-estado-{{ tarea.status }}">
+                            {{ tarea.status|replace('_', ' ')|title }}
+                        </span>
+                        {% if tarea.effort_hours %}
+                        <span class="badge badge-hours">
+                            <i class="fas fa-clock"></i> {{ tarea.effort_hours }}h
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="tarea-info">
+                        {% if tarea.assigned_to %}
+                        <p><i class="fas fa-user"></i> Asignada a: <strong>{{ tarea.assigned_to }}</strong></p>
+                        {% else %}
+                        <p><i class="fas fa-user-slash"></i> Sin asignar</p>
+                        {% endif %}
+                        
+                        <p><i class="fas fa-calendar"></i> Creada: <strong>{{ tarea.fecha_creacion.strftime('%d/%m/%Y') }}</strong></p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <h3>No hay tareas</h3>
+            <p>Crea tu primera tarea para comenzar</p>
+            <a href="{{ url_for('nueva_tarea') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Crear Tarea
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function cambiarEstado(select) {
+    const tareaId = select.dataset.tareaId;
+    const nuevoStatus = select.value;
+    
+    fetch(`/tareas/${tareaId}/cambiar_estado`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: nuevoStatus })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Error al cambiar el estado');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al cambiar el estado');
+    });
+}
+</script>
+{% endblock %}
+

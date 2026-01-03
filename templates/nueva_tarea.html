@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Nueva Tarea - Sistema de Tareas{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-card">
+        <div class="form-header">
+            <h1><i class="fas fa-plus-circle"></i> Nueva Tarea</h1>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+        </div>
+
+        <form method="POST" class="task-form">
+            <div class="form-group">
+                <label for="title">
+                    <i class="fas fa-heading"></i> Título (title) *
+                </label>
+                <input type="text" id="title" name="title" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="description">
+                    <i class="fas fa-align-left"></i> Descripción (description)
+                </label>
+                <textarea id="description" name="description" rows="5"></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="priority">
+                        <i class="fas fa-flag"></i> Prioridad (priority)
+                    </label>
+                    <select id="priority" name="priority">
+                        <option value="baja">Baja</option>
+                        <option value="media" selected>Media</option>
+                        <option value="alta">Alta</option>
+                        <option value="bloqueante">Bloqueante</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="effort_hours">
+                        <i class="fas fa-clock"></i> Horas Estimadas (effort_hours)
+                    </label>
+                    <input type="number" id="effort_hours" name="effort_hours" step="0.01" min="0" placeholder="Ej: 8.5">
+                </div>
+
+                <div class="form-group">
+                    <label for="status">
+                        <i class="fas fa-toggle-on"></i> Estado (status)
+                    </label>
+                    <select id="status" name="status">
+                        <option value="pendiente" selected>Pendiente</option>
+                        <option value="en_progreso">En Progreso</option>
+                        <option value="en_revision">En Revisión</option>
+                        <option value="completada">Completada</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="assigned_to">
+                        <i class="fas fa-user"></i> Asignar a (assigned_to)
+                    </label>
+                    <input type="text" id="assigned_to" name="assigned_to" list="usuarios-list" placeholder="Nombre del miembro del equipo">
+                    <datalist id="usuarios-list">
+                        {% for usuario in usuarios %}
+                        <option value="{{ usuario.nombre }}">
+                        {% endfor %}
+                    </datalist>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Crear Tarea
+                </button>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "title": "Implementar API REST",
+    "description": "Crear endpoints para gestión de tareas usando Flask",
+    "priority": "alta",
+    "effort_hours": 8.5,
+    "status": "pendiente",
+    "assigned_to": "Juan Pérez",
+    "fecha_creacion": "2026-01-03T17:50:34.090566"
+  },
+  {
+    "id": 3,
+    "title": "Documentar API",
+    "description": "Crear documentación de los endpoints",
+    "priority": "media",
+    "effort_hours": 3.0,
+    "status": "pendiente",
+    "assigned_to": "María García",
+    "fecha_creacion": "2026-01-03T17:51:06.702525"
+  },
+  {
+    "id": 4,
+    "title": "Probar Interfaz Web - Actualizada",
+    "description": "Esta es una tarea de prueba creada desde la interfaz web para verificar que todo funciona correctamente.",
+    "priority": "alta",
+    "effort_hours": 2.5,
+    "status": "completada",
+    "assigned_to": "Equipo de Desarrollo",
+    "fecha_creacion": "2026-01-03T17:54:39.487254"
+  }
+]

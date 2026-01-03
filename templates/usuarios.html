@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Usuarios - Sistema de Tareas{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="section-header">
+        <h1><i class="fas fa-users"></i> Gestión de Usuarios</h1>
+        <a href="{{ url_for('nuevo_usuario') }}" class="btn btn-primary">
+            <i class="fas fa-user-plus"></i> Nuevo Usuario
+        </a>
+    </div>
+
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                    <th>Tareas Asignadas</th>
+                    <th>Fecha de Registro</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario.id }}</td>
+                    <td>
+                        <i class="fas fa-user"></i> {{ usuario.nombre }}
+                    </td>
+                    <td>{{ usuario.email }}</td>
+                    <td>
+                        {% if usuario.es_admin %}
+                        <span class="badge badge-admin">
+                            <i class="fas fa-crown"></i> Administrador
+                        </span>
+                        {% else %}
+                        <span class="badge badge-user">
+                            <i class="fas fa-user"></i> Usuario
+                        </span>
+                        {% endif %}
+                    </td>
+                    <td>{{ usuario.tareas_asignadas|length }}</td>
+                    <td>{{ usuario.fecha_creacion.strftime('%d/%m/%Y') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
